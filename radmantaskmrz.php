@@ -14,6 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// تعریف متغیر سراسری برای نام جدول
+global $radmantaskmrz_log_table;
+$radmantaskmrz_log_table = $wpdb->prefix . 'radmantaskmrz_logs';
 
 
 
@@ -22,11 +25,19 @@ define( 'RADMANTASKMRZ_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 
 require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz.php';
+require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-api.php';
+require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-log.php';
+require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-settings.php';
+
+
+
+// Registering the plugin activation hook
+register_activation_hook( __FILE__,  'radmantaskmrz_create_db_table'  );
 
 
 function radmantaskmrz_init() {
 	$plugin = new RadmanTaskMrz();
-	$plugin->run();
+//	$plugin->run();
 }
 add_action( 'plugins_loaded', 'radmantaskmrz_init' );
 
@@ -52,36 +63,28 @@ function radmantaskmrz_settings_page() {
     echo '</div>';
 }
 
-add_action( 'admin_enqueue_scripts', 'enqueue_scripts' );
-function enqueue_scripts() {
-	global $plugin_page;
 
-	// Check if $plugin_page is set and not empty, indicating a plugin page
-	if ( ! empty( $plugin_page ) && $plugin_page == "mrz_product_price_list" ) {
+// Function to create the database table when the plugin is activated
+ function radmantaskmrz_create_db_table() {
+	global $wpdb;
 
+	// Define the global variable for table name
+	$table_name = $wpdb->prefix . 'radmantaskmrz_logs'; // Table name with WordPress prefix
 
-		wp_register_style( 'mrz-product-price-list-styles', plugin_dir_url( __FILE__ ) . 'dist/style.css' );
-		wp_enqueue_style( 'mrz-product-price-list-styles' );
+	// SQL query to create the logs table
+	$charset_collate = $wpdb->get_charset_collate();
 
-		wp_register_script( 'mrz-product-price-list', plugin_dir_url( __FILE__ ) . 'dist/index.js', array(
-			'wp-i18n',
-			'wp-element',
-			'wp-components',
-			'wp-api'
-		), '1.0.0', true );
-		wp_enqueue_script( 'mrz-product-price-list' );
+	$sql = "CREATE TABLE $table_name (
+            id BIGINT(20) NOT NULL AUTO_INCREMENT,
+            request_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            response_content TEXT NOT NULL,
+            request_method VARCHAR(10) NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
 
-		wp_set_script_translations( 'mrz-product-price-list', 'mrz-product-price-list', plugin_dir_path( __FILE__ ) . 'languages' );
+	// Include the WordPress database upgrade function
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-
-		// Generate a nonce for the REST API request
-		$nonce = wp_create_nonce( 'mrz-price-list-nonce' );
-
-		// Pass the API endpoint URL and nonce to the script
-		$api_endpoint_url = rest_url( 'mrz-product-price-list/v1/' );
-		wp_localize_script( 'mrz-product-price-list', 'mrzProductPriceListData', [
-			'apiEndpointUrl' => $api_endpoint_url,
-			'nonce'          => $nonce,
-		] );
-	}
+	// Create the table or update it if necessary
+	dbDelta( $sql );
 }
