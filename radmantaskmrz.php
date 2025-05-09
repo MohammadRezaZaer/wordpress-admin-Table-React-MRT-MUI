@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// تعریف متغیر سراسری برای نام جدول
+
 global $radmantaskmrz_log_table;
 $radmantaskmrz_log_table = $wpdb->prefix . 'radmantaskmrz_logs';
 
@@ -28,11 +28,13 @@ require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz.php';
 require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-api.php';
 require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-log.php';
 require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-settings.php';
+require_once RADMANTASKMRZ_PLUGIN_DIR . 'includes/class-radmantaskmrz-db.php';
 
 
 
-// Registering the plugin activation hook
-register_activation_hook( __FILE__,  'radmantaskmrz_create_db_table'  );
+// Register the plugin activation hook to create the database table
+register_activation_hook( __FILE__, [ 'RadmanTaskMrz_DB', 'create_db_table' ] );
+
 
 
 function radmantaskmrz_init() {
