@@ -39,6 +39,7 @@ register_activation_hook( __FILE__, [ 'RadmanTaskMrz_DB', 'create_db_table' ] );
 
 function radmantaskmrz_init() {
 	$plugin = new RadmanTaskMrz();
+	$plugin_api = new RadmanTaskMrz_API();
 //	$plugin->run();
 }
 add_action( 'plugins_loaded', 'radmantaskmrz_init' );
