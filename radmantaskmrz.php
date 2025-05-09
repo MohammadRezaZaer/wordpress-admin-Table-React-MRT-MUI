@@ -31,5 +31,6 @@ function radmantaskmrz_settings_page() {
     echo '<div class="wrap">';
     echo '<h1>' . esc_html( get_admin_page_title() ) . '</h1>';
     echo '<p>Welcome to RadmanTaskMrz plugin settings page!</p>';
+	echo '<div id="root"></div>';
     echo '</div>';
 }
