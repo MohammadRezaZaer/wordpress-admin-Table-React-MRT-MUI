@@ -44,7 +44,11 @@ class RadmanTaskMrz_API {
 					'request_method'   => sanitize_text_field($request->get_param('request_method')),
 				];
 
-				return RadmanTaskMrz_Log::get_logs($filters);
+				$page     = absint($request->get_param('page')) ?: 1;
+				$per_page = absint($request->get_param('per_page')) ?: 10;
+
+				return RadmanTaskMrz_Log::get_logs($filters, $page, $per_page);
+
 			},
 			'permission_callback' => [ $this, 'post_permissions_check' ],
 		]);
