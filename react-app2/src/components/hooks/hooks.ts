@@ -27,7 +27,7 @@ export function useSaveUrl() {
 
 export function useFetchUrl() {
     return useMutation(async (data: { fetch: boolean }) => {
-        const res = await fetch("http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/fetch-from-url", {
+        const res = await fetch("http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/run-fetch-from-url", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),

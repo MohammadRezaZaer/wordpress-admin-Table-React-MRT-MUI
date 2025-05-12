@@ -20,7 +20,14 @@ class RadmanTaskMrz_API {
 		register_rest_route( 'radmantaskmrz/v1', '/url', [
 			'methods' => 'POST',
 			'callback' => [ $this, 'save_url' ],
-			'permission_callback' => [ $this, 'save_url_permissions_check' ],
+			'permission_callback' => [ $this, 'post_permissions_check' ],
+		]);
+
+		// Route for fetching from the URL
+		register_rest_route( 'radmantaskmrz/v1', '/run-fetch-from-url', [
+			'methods' => 'POST',
+			'callback' => [ $this, 'run_fetch_from_url' ],
+			'permission_callback' => [ $this, 'post_permissions_check' ],
 		]);
 	}
 
@@ -34,6 +41,44 @@ class RadmanTaskMrz_API {
 		}
 
 		return new WP_REST_Response( [ 'url' => $url ], 200 );
+	}
+
+
+
+	public function run_fetch_from_url( $data ) {
+		$url = RadmanTaskMrz_Settings::get_url();
+
+		if (empty($url)) {
+			return new WP_REST_Response(['message' => 'No URL found.'], 404);
+		}
+
+		// Send POST request to the external URL
+		$response = wp_remote_post($url, [
+			'timeout' => 15,
+			'headers' => [
+				'Content-Type' => 'application/json',
+			],
+			'body' => json_encode(['trigger' => true]), // Optional data
+		]);
+
+		if (is_wp_error($response)) {
+			return new WP_REST_Response(['message' => 'Failed to connect to URL.', 'error' => $response->get_error_message()], 500);
+		}
+
+		$body = wp_remote_retrieve_body($response);
+
+		// Save to DB
+
+		$response = RadmanTaskMrz_Log::log_request([
+			'response_content' => $body,
+			'request_method'   => 'POST',
+		]);
+
+
+		return new WP_REST_Response($response, $response['success'] ? 200 : 500);
+
+
+
 	}
 
 	// POST /radmantaskmrz/v1/url - Save a new URL
@@ -64,7 +109,7 @@ class RadmanTaskMrz_API {
 	}
 
 	// Permission callback for POST request - Check if the user has permissions
-	public function save_url_permissions_check() {
+	public function post_permissions_check() {
 		// Only allow admins to save the URL
 //		if ( ! current_user_can( 'manage_options' ) ) {
 //			return new WP_REST_Response( 'Forbidden', 403 );

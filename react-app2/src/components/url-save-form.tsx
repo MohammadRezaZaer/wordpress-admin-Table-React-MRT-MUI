@@ -38,7 +38,7 @@ export function InputForm() {
     const handleFetch = () => {
         fetchFromUrl({ fetch: true }, {
             onSuccess: () => {
-                setFetchMessage("Fetch request sent successfully.")
+                setFetchMessage("Fetch request sent successfully and saved to db.")
             },
             onError: (error: any) => {
                 setFetchMessage(error?.message || "Server error during fetch.")

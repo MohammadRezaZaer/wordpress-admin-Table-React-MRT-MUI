@@ -6,9 +6,9 @@ class RadmanTaskMrz_DB {
 	// Function to create the database table when the plugin is activated
 	public static function create_db_table() {
 		global $wpdb;
-
+		global $radmantaskmrz_log_table;
 		// Define the global variable for table name
-		$table_name = $wpdb->prefix . 'radmantaskmrz_logs'; // Table name with WordPress prefix
+		$table_name = $wpdb->prefix . $radmantaskmrz_log_table; // Table name with WordPress prefix
 
 		// SQL query to create the logs table
 		$charset_collate = $wpdb->get_charset_collate();
