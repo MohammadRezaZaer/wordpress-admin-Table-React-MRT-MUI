@@ -1,8 +1,14 @@
 import {useMutation, useQuery} from "react-query";
 
-export  function useGetUrl() {
+const radmanTaskMrzData = {
+    apiEndpointUrl: "http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/"
+}
+
+export function useGetUrl() {
+
+
     return useQuery("url:get", async () => {
-        const res = await fetch("http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/url")
+        const res = await fetch(`${radmanTaskMrzData.apiEndpointUrl}url`)
         if (!res.ok) throw new Error("Failed to fetch URL.")
         return res.json()
     })
@@ -10,9 +16,9 @@ export  function useGetUrl() {
 
 export function useSaveUrl() {
     return useMutation(async (data: { url: string }) => {
-        const res = await fetch("http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/url", {
+        const res = await fetch(`${radmanTaskMrzData.apiEndpointUrl}url`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data),
         })
 
@@ -27,9 +33,9 @@ export function useSaveUrl() {
 
 export function useFetchUrl() {
     return useMutation(async (data: { fetch: boolean }) => {
-        const res = await fetch("http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/run-fetch-from-url", {
+        const res = await fetch(`${radmanTaskMrzData.apiEndpointUrl}run-fetch-from-url`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data),
         })
 
