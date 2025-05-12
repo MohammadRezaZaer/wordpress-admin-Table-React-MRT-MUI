@@ -16,9 +16,9 @@ import { createColumnHelper } from '@tanstack/react-table';
 const fetchSize = 25;
 
 
-const radmanTaskMrzData={
-    apiEndpointUrl:"http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/"
-}
+// const radmanTaskMrzData={
+//     apiEndpointUrl:"http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/"
+// }
 
 const Example = () => {
     const tableContainerRef = useRef<HTMLDivElement>(null);
