@@ -11,7 +11,8 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
 
         <InputForm/>
-        <ProductTableContainer />
+        
+        {/*<ProductTableContainer />*/}
 
     </QueryClientProvider>
 

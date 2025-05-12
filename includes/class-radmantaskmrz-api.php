@@ -29,6 +29,27 @@ class RadmanTaskMrz_API {
 			'callback' => [ $this, 'run_fetch_from_url' ],
 			'permission_callback' => [ $this, 'post_permissions_check' ],
 		]);
+
+		register_rest_route('radmantaskmrz/v1', '/logs', [
+			'methods'  => 'GET',
+			'callback' => function(WP_REST_Request $request) {
+				// Optionally validate user permission
+//				if (!current_user_can('manage_options')) {
+//					return new WP_REST_Response(['error' => 'Unauthorized'], 403);
+//				}
+
+				$filters = [
+					'request_date'     => sanitize_text_field($request->get_param('request_date')),
+					'response_content' => sanitize_text_field($request->get_param('response_content')),
+					'request_method'   => sanitize_text_field($request->get_param('request_method')),
+				];
+
+				return RadmanTaskMrz_Log::get_logs($filters);
+			},
+			'permission_callback' => [ $this, 'post_permissions_check' ],
+		]);
+
+
 	}
 
 	// GET /radmantaskmrz/v1/url - Get the stored URL
