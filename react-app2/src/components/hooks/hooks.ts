@@ -1,8 +1,8 @@
 import {useMutation, useQuery} from "react-query";
 
-const radmanTaskMrzData = {
-    apiEndpointUrl: "http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/"
-}
+// const radmanTaskMrzData = {
+//     apiEndpointUrl: "http://localhost/plugin-lab/wp-json/radmantaskmrz/v1/"
+// }
 
 export function useGetUrl() {
 

@@ -20,11 +20,11 @@ class RadmanTaskMrz {
 		if ( isset( $hook ) && 'toplevel_page_radman-task-mrz' === $hook ) {
 
 			// Register and enqueue the styles
-			wp_register_style( 'radman-task-mrz-styles', plugin_dir_url( __FILE__ ) . '../assets/dist/style.css' );
+			wp_register_style( 'radman-task-mrz-styles', plugin_dir_url( __FILE__ ) . '../dist/style.css' );
 			wp_enqueue_style( 'radman-task-mrz-styles' );
 
 			// Register and enqueue the script
-			wp_register_script( 'radman-task-mrz-scripts', plugin_dir_url( __FILE__ ) . '../assets/dist/index.js', [
+			wp_register_script( 'radman-task-mrz-scripts', plugin_dir_url( __FILE__ ) . '../dist/index.js', [
 				'wp-i18n',
 				'wp-element',
 				'wp-components',
@@ -37,7 +37,7 @@ class RadmanTaskMrz {
 
 			// Pass the API endpoint URL and nonce to the JavaScript
 			$nonce = wp_create_nonce( 'radman-task-mrz-nonce' );
-			$api_endpoint_url = rest_url( 'radman-task-mrz/v1/' );
+			$api_endpoint_url = rest_url( 'radmantaskmrz/v1/' );
 			wp_localize_script( 'radman-task-mrz-scripts', 'radmanTaskMrzData', [
 				'apiEndpointUrl' => $api_endpoint_url,
 				'nonce'          => $nonce,
