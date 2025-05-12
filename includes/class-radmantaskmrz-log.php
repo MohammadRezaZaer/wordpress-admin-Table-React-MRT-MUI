@@ -29,8 +29,7 @@ class RadmanTaskMrz_Log {
 		}
 	}
 
-	//  method to fetch logs with optional filters
-	public static function get_logs($filters = []) {
+	public static function get_logs($filters = [], $page = 1, $per_page = 10) {
 		global $wpdb;
 		global $radmantaskmrz_log_table;
 		$table_name = $radmantaskmrz_log_table;
@@ -54,18 +53,36 @@ class RadmanTaskMrz_Log {
 		}
 
 		$where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
-		$query     = "SELECT * FROM $table_name $where_sql ORDER BY request_date DESC LIMIT 100";
 
-		// Secure prepared query
-		$prepared = $params ? $wpdb->prepare($query, ...$params) : $query;
+		// Count total
+		$count_query = "SELECT COUNT(*) FROM $table_name $where_sql";
+		$total = $params ? $wpdb->get_var($wpdb->prepare($count_query, ...$params)) : $wpdb->get_var($count_query);
 
-		$results = $wpdb->get_results($prepared, ARRAY_A);
+		$page = max(1, intval($page));
+		$per_page = max(1, intval($per_page));
+		$offset = ($page - 1) * $per_page;
+
+		// Fetch data
+		$data_query = "SELECT * FROM $table_name $where_sql ORDER BY request_date DESC LIMIT %d OFFSET %d";
+		$params_with_limit = array_merge($params, [$per_page, $offset]);
+		$prepared_query = $wpdb->prepare($data_query, ...$params_with_limit);
+		$results = $wpdb->get_results($prepared_query, ARRAY_A);
+
+		$last_page = ceil($total / $per_page);
+		$from = $total > 0 ? $offset + 1 : 0;
+		$to = $from + count($results) - 1;
 
 		return [
-			'success' => true,
-			'logs'    => $results,
+			"current_page" => $page,
+			"data"         => $results,
+			"from"         => $from,
+			"last_page"    => $last_page,
+			"per_page"     => $per_page,
+			"to"           => $to,
+			"total"        => intval($total),
 		];
 	}
+
 
 
 }
