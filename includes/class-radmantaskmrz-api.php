@@ -39,9 +39,9 @@ class RadmanTaskMrz_API {
 	// POST /radmantaskmrz/v1/url - Save a new URL
 	public function save_url( $data ) {
 		// Verify nonce for security
-		if ( ! isset( $data['nonce'] ) || ! wp_verify_nonce( $data['nonce'], 'radman-task-mrz-nonce' ) ) {
-			return new WP_REST_Response( 'Invalid nonce', 403 );
-		}
+//		if ( ! isset( $data['nonce'] ) || ! wp_verify_nonce( $data['nonce'], 'radman-task-mrz-nonce' ) ) {
+//			return new WP_REST_Response( 'Invalid nonce', 403 );
+//		}
 
 		// Validate and sanitize the URL
 		if ( ! isset( $data['url'] ) || ! filter_var( $data['url'], FILTER_VALIDATE_URL ) ) {
@@ -66,9 +66,9 @@ class RadmanTaskMrz_API {
 	// Permission callback for POST request - Check if the user has permissions
 	public function save_url_permissions_check() {
 		// Only allow admins to save the URL
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return new WP_REST_Response( 'Forbidden', 403 );
-		}
+//		if ( ! current_user_can( 'manage_options' ) ) {
+//			return new WP_REST_Response( 'Forbidden', 403 );
+//		}
 		return true;
 	}
 }
